@@ -1,0 +1,6 @@
+{
+  "title": "OCI Terraform Template",
+  "description": "Reusable Terraform modules and operational guidance for the CCOE OCI foundation.",
+  "eyebrow": "Cloud foundations · OCI infrastructure as code",
+  "repository": "https://github.com/CCOE-Azure/oci-template"
+}

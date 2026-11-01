@@ -1,0 +1,32 @@
+exclude: \.pdf$
+
+repos:
+  - repo: local
+    hooks:
+      - id: terraform-format
+        name: Terraform formatting
+        entry: terraform fmt -check -recursive
+        language: system
+        pass_filenames: false
+        files: \.(tf|tfvars|tftest\.hcl)$
+
+      - id: terraform-validate
+        name: Terraform root validation
+        entry: pwsh -NoProfile -Command "terraform init -backend=false -input=false; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; terraform validate; exit $LASTEXITCODE"
+        language: system
+        pass_filenames: false
+        files: \.tf$
+
+      - id: module-documentation
+        name: Generated module reference check
+        entry: pwsh -NoProfile -File scripts/Update-ModuleDocs.ps1 -Check
+        language: system
+        pass_filenames: false
+        files: ^modules/.*\.(tf|md)$
+
+      - id: documentation-security
+        name: Documentation security checks
+        entry: pwsh -NoProfile -File scripts/Test-DocsSecurity.ps1
+        language: system
+        pass_filenames: false
+        files: ^scripts/(Build-DocsSite|Test-DocsSecurity)\.ps1$

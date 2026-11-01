@@ -1,0 +1,32 @@
+name: Module Standards
+
+on:
+  push:
+    branches: [main, dev, sbx]
+  pull_request:
+    paths:
+      - "modules/**"
+      - "docs/**"
+      - "scripts/check_module_standards.py"
+      - ".github/workflows/module-standards.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  module-standards:
+    name: Module documentation and test standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Ported repos start in warn mode. Set the MODULE_STANDARDS_MODE variable to "fail" to enforce.
+      MODULE_STANDARDS_MODE: ${{ vars.MODULE_STANDARDS_MODE || 'warn' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check module standards
+        run: python3 scripts/check_module_standards.py --cloud oci --mode "$MODULE_STANDARDS_MODE"
